@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Leaderboard</title>
+    <link rel="stylesheet" href="static/style.css">
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background-color: #f5f5dc; /* wheat background */
+        }
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background-color: #388e3c; /* dark green background */
+            color: white;
+            padding: 10px 20px;
+        }
+        .logo {
+            font-size: 1.5em;
+        }
+        .username {
+            font-size: 1.2em;
+        }
+        .container {
+            padding: 20px;
+        }
+        .leaderboard-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        .back-button {
+            background-color: #2196F3; /* Blue */
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .test-code {
+            font-size: 1.2em;
+        }
+        .table-container {
+            overflow-x: auto;
+            border-radius: 5px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background-color: white;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        th, td {
+            padding: 15px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+        th {
+            background-color: #388e3c; /* dark green background */
+            color: white;
+        }
+        @media (max-width: 768px) {
+            .leaderboard-header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            .back-button {
+                width: 100%;
+                margin-bottom: 10px;
+            }
+            .test-code {
+                font-size: 1em;
+                margin-top: 10px;
+            }
+            table {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    {% with messages=get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+        {% for category,message in messages %}
+        <div class="alert-box">
+            <div class="alert-msg" style="background-color:{{category}};">{{message}}</div>
+        </div>
+        {% endfor %}
+    {% endif %}
+    {% endwith %}
+    <header>
+        <div class="logo">Mr.PKG's MCQ</div>
+        <div class="username">{{USER}}</div>
+    </header>
+    <div class="container">
+        <div class="leaderboard-header">
+            <button class="back-button" onclick="goBack()">Back</button>
+            <div class="test-code">Test Code:{{TEST_CODE}}</div>
+        </div>
+        <div class="table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>S.No</th>
+                        <th>Username</th>
+                        <th>Score</th>
+                        <th>Max Score</th>
+                        <th>Time Taken</th>
+                        <th>Check</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for name in board %}
+                        <tr>
+                            <td>{{loop.index}}</td>
+                            <td>{{name.USER_NAME}}</td>
+                            <td>{{name.SCORED}}</td>
+                            <td>{{name.MAXSCORE}}</td>
+                            <td>{{name.TIMEFINISH}}</td>
+                            <td><a href="{{url_for("test_atten",code=TEST_CODE,mode=1)}}"><button class="back-button">View</button></a></td>
+                        </tr>
+                    {% endfor %}
+                    <!-- Add more rows as needed -->
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <script>
+        function goBack() {
+            window.history.back();
+        }
+    </script>
+</body>
+</html>

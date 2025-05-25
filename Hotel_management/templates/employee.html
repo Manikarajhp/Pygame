@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<head>
+    <title>MR_PKG</title>
+    <style>
+        *{
+            margin: 0px;
+            padding: 0px;
+        }
+        body{
+            width: 100vw;
+            height: 100hw;
+        }
+        header{
+            position: fixed;
+            top: 0;
+            width: 100%;
+            height: 50px;
+            background-color: rgb(24, 142, 206);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 32px;
+            font-weight: bolder;
+        }
+        footer{
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+            background-color: rgb(24, 142, 206);
+            color: white;
+            text-align: center;
+        }
+        section{
+            width: 100%;
+            height: 660px;
+        }
+        table,th,td{
+            border: 1px solid black;
+            padding: 10px;
+            text-align: justify;
+            border-collapse: collapse;
+        }
+        .search-add{
+            display: flex;
+            justify-content: space-between;
+            padding: 20px;
+            position: sticky;
+            top: 40px;
+        }
+        .data{
+            display: flex;
+            justify-content: center;
+            margin-top: 30px;
+        }
+        button{
+            width: 120px;
+            height: 30px;
+            border: none;
+            border-radius: 10px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+        tr:nth-of-type(even){
+            background-color: rgb(195, 255, 135);
+        }
+        a{
+            text-decoration: none;
+        }
+    </style>
+</head>
+<body>
+    <main>
+        {% with messages=get_flashed_messages() %}
+            {% if messages %}
+                {% for message in messages %}
+                    <script>alert('{{message}}');</script>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+        <header>
+            <div class="company-name">
+                Mr.PKG Hotels
+            </div>
+        </header>
+        <section>
+            <div class="container">
+                <div class="search-add">
+                    <button><a href="{{url_for("index")}}">Back</a></button>
+                    <div>
+                        <form action="/search_emp" method="post">
+                            <input type="search" name="find" placeholder="Search  by Employee ID" style="border-radius: 5px; height: 28px;">
+                            <input type="submit" value="Search" style="background-color: lawngreen; width: 100px;height: 25px;border: none; border-radius: 10px;">
+                        </form>
+                    </div>
+                    <button style="background-color: lawngreen;""><a style="color: black;" href="{{url_for("add_emp")}}">+Add Employee</a></button>
+                </div>
+                <div class="data">
+                    <table cellspacing="10px">
+                        <tr>
+                            <th>Id</th>
+                            <th>Name</th>
+                            <th>Job</th>
+                            <th>Mobile</th>
+                            <th>Salary</th>
+                            <th>Address</th>
+                            <th>DOJ</th>
+                            <th>Acc No</th>
+                            <th>Bank Name</th>
+                        </tr>
+                        {% for info in infos %}
+                            <tr>
+                                <td>{{info.eid}}</td>
+                                <td>{{info.ename}}</td>
+                                <td>{{info.ejob}}</td>
+                                <td>{{info.emobile}}</td>
+                                <td>{{info.esalary}}</td>
+                                <td>{{info.eadd}}</td>
+                                <td>{{info.edoj}}</td>
+                                <td>{{info.eaccno}}</td>
+                                <td>{{info.ebank}}</td>
+                                <td><button style="background-color: red;"><a onclick="return confirm('Are you sure to delete?');" href="{{url_for("delete_emp",id=info.eid)}}" style="color: white;">Delete</a></button></td>
+                                <td><button style="background-color: lawngreen;"><a href="{{url_for("edit_emp",id=info.eid)}}">Edit</a></button></td>
+                            </tr>
+                        {% endfor %}
+                    </table>
+                </div>
+            </div>
+        </section>
+        <footer>
+            <div class="foot">
+                <small>developed by MR_PKG</small>
+            </div>
+        </footer>
+    </main>
+</body>
+</html>

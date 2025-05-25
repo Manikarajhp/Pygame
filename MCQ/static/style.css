@@ -1,0 +1,39 @@
+*{
+    user-select: none;
+    -webkit-user-select: none;
+    -ms-user-select: none;
+    -moz-user-select: none;
+}
+.alert-box{
+    width: 100vw;
+    position: absolute;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    top: -50px;
+    transition: 0.5s;
+    z-index: 1001;
+}
+.alert-msg{
+    width: 400px;
+    height: 50px;
+    border-radius: 5px;
+    padding-left: 10px;
+    display: flex;
+    align-items: center;
+    animation: popup 5s ease-out;
+}
+@keyframes popup{
+    0%{
+        transform: translateY(-10px) scale(0);
+    }
+    10%{
+        transform: translateY(60px) scale(1);
+    }
+    60%{
+        transform: translateY(60px) scale(1);
+    }
+    100%{
+        transform: translateY(-10px) scale(0);
+    }
+}

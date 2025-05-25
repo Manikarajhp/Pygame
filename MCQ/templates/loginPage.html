@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login and Signup</title>
+    <link rel="stylesheet" href="static/style.css">
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #e8f5e9; /* light green background */
+            margin: 0;
+            font-family: Arial, sans-serif;
+        }
+        .container {
+            background-color: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            width: 90%;
+            max-width: 400px;
+            transition: all 0.3s;
+        }
+        .container h2 {
+            margin-bottom: 20px;
+            color: #388e3c; /* dark green text */
+        }
+        .container input[type="text"],
+        .container input[type="password"],
+        .container input[type="email"] {
+            width: 94%;
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #c8e6c9; /* light green border */
+            border-radius: 5px;
+        }
+        .container button {
+            width: 48%;
+            padding: 10px;
+            background-color: #388e3c; /* dark green button */
+            border: none;
+            border-radius: 5px;
+            color: white;
+            font-size: 16px;
+            cursor: pointer;
+            margin: 5px 1%;
+        }
+        .container button:hover {
+            background-color: #2e7d32; /* darker green button on hover */
+        }
+        .buttons {
+            display: flex;
+            justify-content: space-between;
+        }
+    </style>
+</head>
+<body>
+    {% with messages=get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+        {% for category,message in messages %}
+        <div class="alert-box">
+            <div class="alert-msg" style="background-color:{{category}};">{{message}}</div>
+        </div>
+        {% endfor %}
+    {% endif %}
+    {% endwith %}
+    <div class="container" id="login-container">
+        <h2>Login</h2>
+        <form action="/login_verify" method="post">
+            <input type="email" placeholder="Email" name="EMAIL" required>
+            <input type="password" placeholder="Password" name="PASSWORD" required>
+            <div class="buttons">
+                <button onclick="showSignup()">Signup</button>
+                <button type="submit">Login</button>
+            </div>
+        </form>
+    </div>
+    <div class="container" id="signup-container" style="display: none;">
+        <h2>Signup</h2>
+        <form action="/signup_verify" method="post">
+            <input type="text" placeholder="Username" name="USERNAME" required>
+            <input type="email" placeholder="Email" name="EMAIL" required>
+            <input type="password" placeholder="Password" name="PASSWORD" required>
+            <div class="buttons">
+                <button onclick="showLogin()">Login</button>
+                <button type="submit">Signup</button>
+            </div>
+        </form>
+    </div>
+    <script>
+        function showSignup() {
+            document.getElementById('login-container').style.display = 'none';
+            document.getElementById('signup-container').style.display = 'block';
+        }
+
+        function showLogin() {
+            document.getElementById('login-container').style.display = 'block';
+            document.getElementById('signup-container').style.display = 'none';
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Attend MCQ Test</title>
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background-color: #f5f5dc; /* wheat background */
+        }
+        .overlay {
+            display: none; /* Hidden by default */
+            position: fixed; /* Stay in place */
+            z-index: 1; /* Sit on top */
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto; /* Enable scroll if needed */
+            background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+            padding-top: 60px;
+        }
+        .popup-content {
+            background-color: #fff;
+            margin: 5% auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 80%;
+            max-width: 500px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        .popup-footer {
+            display: flex;
+            justify-content: flex-end;
+            margin-top: 20px;
+        }
+        .popup-footer button {
+            margin-left: 10px;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .popup-footer .back-btn {
+            background-color: #f44336; /* Red */
+            color: white;
+        }
+        .popup-footer .enter-btn {
+            background-color: #388e3c; /* Green */
+            color: white;
+        }
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background-color: #388e3c; /* dark green background */
+            color: white;
+            padding: 10px 20px;
+        }
+        .company-name {
+            font-size: 1.5em;
+        }
+        .username {
+            font-size: 1.2em;
+        }
+        .container {
+            padding: 20px;
+        }
+        .test-details, .question {
+            background-color: white;
+            padding: 20px;
+            margin-bottom: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        .question-options {
+            list-style: none;
+            padding: 0;
+        }
+        .question-options li {
+            margin: 10px 0;
+        }
+        .question-options input {
+            margin-right: 10px;
+        }
+        .buttons {
+            display: flex;
+            justify-content: space-between;
+        }
+        .buttons button {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            width: 48%;
+        }
+        .buttons .leave-btn {
+            background-color: #f44336; /* Red */
+            color: white;
+        }
+        .buttons .submit-btn {
+            background-color: #388e3c; /* Green */
+            color: white;
+        }
+        @media (max-width: 768px) {
+            .popup-content, .test-details, .question {
+                width: 90%;
+            }
+            .buttons {
+                flex-direction: column;
+            }
+            .buttons button {
+                width: 100%;
+                margin-bottom: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div id="overlay" class="overlay">
+        <div class="popup-content">
+            <h2 id="testTitle">{{testdata.TEST_TITLE}}</h2>
+            <p id="testDescription">{{testdata.TEST_DESCRIPTION}}</p>
+            <p><strong>Max Score:</strong> <span id="maxScore">100</span></p>
+            <p><strong>Start Time:</strong> <span id="startTime">{{testdata.START_TIME}}</span></p>
+            <p><strong>End Time:</strong> <span id="endTime">{{testdata.END_TIME}}</span></p>
+            <div class="popup-footer">
+                <button class="back-btn" onclick="goBack()">Back</button>
+                <button class="enter-btn" onclick="enterTest()">{% if view %} View {% else %} Enter Test {% endif %}</button>
+            </div>
+        </div>
+    </div>
+
+    <header>
+        <div class="company-name">Mr.PKG's MCQ</div>
+        <div class="username">{{username}}</div>
+    </header>
+
+    <div class="container">
+        <div class="test-details">
+            <h2 id="mainTestTitle">{{testdata.TEST_TITLE}}:{% if view %} Answers {% endif %}</h2>
+            <p><strong>Start Time:</strong> <span id="mainStartTime">{{testdata.START_TIME}}</span></p>
+            <p><strong>End Time:</strong> <span id="mainEndTime">{{testdata.END_TIME}}</span></p>
+            <p id="mainTestDescription">{{testdata.TEST_DESCRIPTION}}</p>
+        </div>
+
+        <form id="testForm" action="{{url_for("submit_test",code=testdata.ID)}}" method="post">
+            <!-- Questions from the database should be populated here -->
+             {% for question in questions %}
+                <div class="question">
+                    <p><strong>Question ID: <input type="number" value="{{question.ID}}" name="questionid" style="width: 30px;margin-bottom: 10px;" readonly ></strong><br>{{ loop.index }}.{{question.QUESTION}}</p>
+                    <ul class="question-options">
+                        <li><input type="radio" name="question{{loop.index}}" value="option1" 
+                            {% if view %}
+                                {% if question.CORRECT == 'option1' %}
+                                    checked
+                                {% else %}
+                                    disabled
+                                {% endif %}
+                            {% endif %}
+                            > {{question.OPTION1}}</li>
+                        <li><input type="radio" name="question{{loop.index}}" value="option2"
+                            {% if view %}
+                                {% if question.CORRECT == 'option2' %}
+                                    checked
+                                {% else %}
+                                    disabled    
+                                {% endif %}
+                            {% endif %}
+                            > {{question.OPTION2}}</li>
+                        <li><input type="radio" name="question{{loop.index}}" value="option3"
+                            {% if view %}
+                                {% if question.CORRECT == 'option3' %}
+                                    checked
+                                {% else %}
+                                    disabled
+                                {% endif %}
+                            {% endif %}
+                            > {{question.OPTION3}}</li>
+                        <li><input type="radio" name="question{{loop.index}}" value="option4"
+                            {% if view %}
+                                {% if question.CORRECT == 'option4' %}
+                                    checked
+                                 {% else %}
+                                    disabled
+                                {% endif %}
+                            {% endif %}
+                            > {{question.OPTION4}}</li>
+                    </ul>
+                    <p><strong>Score:</strong>{{question.SCORE}}</p>
+                    <p><strong>Negative Score:</strong>{{question.NEG_SCORE}}</p>
+                </div>
+            {% endfor %}
+            <!-- More questions can be added here -->
+
+            <div class="buttons">
+                <button type="button" class="leave-btn" onclick="leaveTest()">Leave</button>
+                <button type="submit" class="submit-btn" onclick="return confirm('You cannot attend this test Again after you Submit.')" 
+                    {% if view %}
+                        disabled
+                    {% endif %}
+                >Submit</button>
+            </div>
+        </form>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            document.getElementById('overlay').style.display = 'block';
+        });
+
+        function goBack() {
+            window.history.back();
+        }
+
+        function enterTest() {
+            document.getElementById('overlay').style.display = 'none';
+        }
+
+        function leaveTest() {
+            if (confirm('Are you sure you want to leave the test? Your progress will not be saved.')) {
+                window.history.back();
+            }
+        }
+    </script>
+</body>
+</html>

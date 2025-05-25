@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home Page</title>
+    <link rel="stylesheet" href="static/style.css">
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background-color: #f5f5dc; /* wheat background */
+        }
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background-color: #388e3c; /* dark green background */
+            color: white;
+            padding: 10px 20px;
+            position: relative;
+        }
+        a{
+            color: white;
+            text-decoration: none;
+        }
+        .logo {
+            font-size: 1.5em;
+        }
+        .username {
+            font-size: 1.2em;
+            margin-right: 10px;
+        }
+        .profile {
+            width: 40px;
+            height: 40px;
+            background-color: #fff;
+            border-radius: 50%;
+            overflow: hidden;
+            cursor: pointer;
+        }
+        .profile img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        .profile-content {
+            display: flex;
+            align-items: center;
+        }
+        .sidebar {
+            position: fixed;
+            top: 0;
+            right: -250px; /* Hide sidebar initially */
+            width: 250px;
+            height: 100%;
+            background-color: #388e3c; /* dark green background */
+            color: white;
+            transition: right 0.3s;
+            box-shadow: -2px 0 5px rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+        }
+        .slidebar-content {
+            margin: 20px;
+        }
+        .sidebar.active {
+            right: 0;
+        }
+        .sidebar h3 {
+            margin-top: 0;
+        }
+        .sidebar .close-btn {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            cursor: pointer;
+            background-color: #fff;
+            color: #388e3c;
+            border: none;
+            border-radius: 5px;
+            padding: 5px 10px;
+        }
+        .sidebar ul {
+            list-style-type: none;
+            padding: 0;
+        }
+        .sidebar li {
+            padding: 10px 0;
+            cursor: pointer;
+            border-bottom: 1px solid #2e7d32; /* darker green border */
+        }
+        .dropdown {
+            display: none;
+            padding-left: 15px;
+            transition: 0.5s;
+        }
+        .dropdown li {
+            border-bottom: none;
+        }
+        .container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: calc(100vh - 60px);
+        }
+        .section {
+            width: 100%;
+            max-width: 900px;
+            display: flex;
+            justify-content: space-evenly;
+        }
+        .form-container, .create-test-container {
+            width: 48%;
+            background-color: white;
+            padding: 20px;
+            margin: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        .form-container input[type="text"],
+        .form-container button,
+        .create-test-container button,
+        .create-test-container input[type="text"] {
+            width: 95%;
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #c8e6c9; /* light green border */
+            border-radius: 5px;
+        }
+        .form-container button,
+        .create-test-container button, .logout-btn {
+            width: 100%;
+            background-color: #388e3c; /* dark green button */
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+        .logout-btn{
+            width: 50%;
+            height: 30px;
+            border-radius: 5px;
+            margin-left: 25%;
+        }
+        .form-container button:hover,
+        .create-test-container button:hover {
+            background-color: #2e7d32; /* darker green button on hover */
+        }
+        @media (max-width: 768px) {
+            .section {
+                flex-direction: column;
+                align-items: center;
+            }
+            .form-container, .create-test-container {
+                width: 100%;
+                margin-bottom: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    {% with messages=get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+        {% for category,message in messages %}
+        <div class="alert-box">
+            <div class="alert-msg" style="background-color:{{category}};">{{message}}</div>
+        </div>
+        {% endfor %}
+    {% endif %}
+    {% endwith %}
+    <header>
+        <div class="logo">Mr.PKG's MCQ</div>
+        <div class="profile-content">
+            <div class="username">{{info.USER_NAME}}</div>
+            <div class="profile" onclick="toggleSidebar(event)">
+                <img src="path/to/profile-picture.jpg" alt="Profile Picture">
+            </div>
+        </div>
+    </header>
+    <div class="sidebar" id="sidebar">
+        <div class="slidebar-content">
+            <button class="close-btn" onclick="toggleSidebar()">Close</button>
+            <h3>Menu</h3>
+            <ul>
+                <li onclick="toggleDropdown('your-tests-dropdown')">Your Tests</li>
+                <ul id="your-tests-dropdown" class="dropdown">
+                    {% for test_info in test_infos %}
+                        <a href="{{url_for("test_edit",code=test_info.ID)}}"><li>{{test_info.ID}}</li></a>
+                    {% endfor %}
+                </ul>
+                <li onclick="toggleDropdown('attended-tests-dropdown')">Attended Tests</li>
+                <ul id="attended-tests-dropdown" class="dropdown">
+                    {% for attend in attended_tests %}
+                        <a href="{{url_for("leader_board",code=attend.TEST_ID)}}"><li>{{attend.TEST_ID}}</li></a>
+                    {% endfor %}
+                </ul>
+            </ul>
+        </div>
+        <a href="/logout"  onclick="return confirm('Are You Sure to Logout?')"><button type="button" class="logout-btn" style="background-color: rgb(244, 70, 70);">Logout</button></a>
+    </div>
+    <div class="container">
+        <div class="section">
+            <div class="form-container">
+                <form action="/test_atten" method="post">
+                    <h2>Enter Test</h2>
+                    <input type="text" placeholder="Test Code" name="TESTCODE" required>
+                    <button type="submit">Enter Test</button>
+                </form>
+            </div>
+            <div class="create-test-container">
+                <h2>Create a New Test</h2>
+                <a href="/test_edit"><button type="button">Create Test</button></a>
+            </div>
+        </div>
+    </div>
+    <script>
+        function toggleSidebar(event) {
+            const sidebar = document.getElementById('sidebar');
+            sidebar.classList.toggle('active');
+            
+            // Prevent click event from propagating to document
+            if (event) {
+                event.stopPropagation();
+            }
+            
+            // Toggle body click event listener based on sidebar state
+            if (sidebar.classList.contains('active')) {
+                document.addEventListener('click', closeSidebarOnClickOutside);
+            } else {
+                document.removeEventListener('click', closeSidebarOnClickOutside);
+            }
+        }
+
+        function closeSidebarOnClickOutside(event) {
+            const sidebar = document.getElementById('sidebar');
+            if (!sidebar.contains(event.target) && !event.target.closest('.profile')) {
+                sidebar.classList.remove('active');
+                document.removeEventListener('click', closeSidebarOnClickOutside);
+            }
+        }
+
+        function toggleDropdown(dropdownId) {
+            const dropdown = document.getElementById(dropdownId);
+            dropdown.style.display = dropdown.style.display === 'block' ? 'none' : 'block';
+        }
+    </script>
+</body>
+</html>

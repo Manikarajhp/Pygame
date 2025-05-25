@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<head>
+    <title>MR_PKG</title>
+    <style>
+        *{
+            margin: 0px;
+            padding: 0px;
+        }
+        body{
+            width: 100vw;
+            height: 100hw;
+            background: url("{{url_for('static',filename="employee_img.jpg")}}");
+            background-size: cover;
+            background-repeat:no-repeat;
+        }
+        header{
+            position: fixed;
+            top: 0;
+            width: 100%;
+            height: 50px;
+            background-color: rgb(24, 142, 206);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 32px;
+            font-weight: bolder;
+        }
+        footer{
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+            background-color: rgb(24, 142, 206);
+            color: white;
+            text-align: center;
+        }
+        .company-name{
+            font-size: 30px;
+            font-weight: bolder;
+        }
+        section{
+            width: 100%;
+            height: 610px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .form-div{
+            border: 1px solid black;
+            border-radius: 10px;
+            background-color: whitesmoke;
+        }
+        .btn,button{
+            width: 100px;
+            height: 30px;
+            border-radius: 10px;
+            font-weight: bold;
+            transition: 0.3s;
+        }
+        .btn:hover{
+            width: 110px;
+            height: 40px;
+        }
+        a{
+            text-decoration: none;
+        }
+    </style>
+</head>
+<body>
+    <main>
+        <header>
+            <div class="company-name">
+                Mr.PKG Hotels
+            </div>
+        </header>
+        <button style="margin: 10px 0px 0px 10px;position: sticky; top: 60px;"><a href="{{url_for("empinfo")}}">Back</a></button>
+        <section>
+            <div class="form-div">
+            <form action="/add_emp" method="post">
+                <table cellspacing="20px">
+                    <tr>
+                        <td bgcolor="lawngreen" colspan="2" align="center"><b>Employee Details</b></td>
+                    </tr>
+                    <tr>
+                        <td><label>Name</label></td>
+                        <td><input type="text" name="name"></td>
+                    </tr>
+                    <tr>
+                        <td><label>Id Number</label></td>
+                        <td><input type="number" name="id"></td>
+                    </tr>
+                    <tr>
+                        <td><label>Date of Joining</label></td>
+                        <td><input type="date" name="doj"></td>
+                    </tr>
+                    <tr>
+                        <td><label>Job</label></td>
+                        <td><input type="text" name="job"></td>
+                    </tr>
+                    <tr>
+                        <td><label>Address</label></td>
+                        <td><input type="text" name="addr"></td>
+                    </tr>
+                    <tr>
+                        <td><label>Shift</label></td>
+                        <td>
+                            <select name="shift">
+                                <option value="Day">Day</option>
+                                <option value="Night">Night</option>
+                            </select>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><label>Mobile</label></td>
+                        <td><input type="number" name="mobile"></td>
+                    </tr>
+                    <tr>
+                        <td><label>Salary</label></td>
+                        <td><input type="number" name="sal"></td>
+                    </tr>
+                    <tr>
+                        <td bgcolor="lawngreen" colspan="2" align="center"><b>Bank Details</b></td>
+                    </tr>
+                    <tr>
+                        <td><label>Bank Name</label></td>
+                        <td><input type="text" name="bank"></td>
+                    </tr>
+                    <tr>
+                        <td><label>Account Number</label></td>
+                        <td><input type="number" name="accno"></td>
+                    </tr>
+                    <tr>
+                        <td align="center"><button class="btn" type="reset" style="background-color: red;color: white;">Reset</button></td>
+                        <td align="center"><button class="btn" type="submit" style="background-color: lawngreen;">+ADD</button></td>
+                    </tr>
+                </table>
+            </form>
+        </div>
+        </section>
+        <footer>
+            <div class="foot">
+                <small>developed by MR_PKG</small>
+            </div>
+        </footer>
+    </main>
+</body>
+</html>

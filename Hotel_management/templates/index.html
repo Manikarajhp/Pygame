@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<head>
+    <title>MR_PKG</title>
+    <style>
+        *{
+            margin: 0px;
+            padding: 0px;
+        }
+        body{
+            width: 100vw;
+            height: 100vh;
+            background: url("{{url_for('static',filename="hotel_img.jpg")}}");
+            background-size: cover;
+            background-repeat: no-repeat;
+        }
+        header{
+            position: fixed;
+            top: 0;
+            width: 100%;
+            height: 50px;
+            background-color: rgb(24, 142, 206);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 32px;
+            font-weight: bolder;
+        }
+        footer{
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+            background-color: rgb(24, 142, 206);
+            color: white;
+            text-align: center;
+        }
+        section{
+            width: 100%;
+            height: 600px;
+            display: flex;
+            justify-content: space-evenly;
+            align-items: center;
+        }
+        button{
+            width: 150px;
+            height: 100px;
+            border-radius: 10px;
+            font-weight: bolder;
+            transition: 0.6s;
+            border: none;
+            color: white;
+            background-color: rgb(24, 142, 206);
+        }
+        button:hover{
+            width: 200px;
+            height: 150px;
+        }
+        a{
+            color: white;
+            text-decoration: none;
+        }
+    </style>
+</head>
+<body>
+    <!-- <img src=" alt=""> -->
+    <main>
+        <header>
+            <div class="company-name">
+                Mr.PKG Hotels
+            </div>
+        </header>
+        <section>
+            <div class="employee-info">
+                <button><a href="{{url_for("empinfo")}}">Employee Details</a></button>
+            </div>
+            <div class="customer-info">
+                <button><a href="{{url_for("custinfo")}}">Customer Details</a></button>
+            </div>
+        </section>
+        <footer>
+            <div class="foot">
+                <small>developed by MR_PKG</small>
+            </div>
+        </footer>
+    </main>
+</body>
+</html>

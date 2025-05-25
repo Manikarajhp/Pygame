@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create Test</title>
+    <link rel="stylesheet" href="static/style.css">
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background-color: #f5f5dc; /* wheat background */
+        }
+        header, footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 20px;
+            background-color: #388e3c; /* dark green background */
+            color: white;
+        }
+        .logo {
+            font-size: 1.5em;
+        }
+        .username, .testcode-container {
+            font-size: 1.2em;
+        }
+        .container {
+            padding: 20px;
+        }
+        .form-container, .mcq-container {
+            background-color: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+        }
+        .form-container input[type="text"],
+        .form-container input[type="datetime-local"],
+        .form-container textarea,
+        .mcq-container textarea,
+        .mcq-container input[type="text"],
+        .mcq-container input[type="number"] {
+            width: 98%;
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #c8e6c9; /* light green border */
+            border-radius: 5px;
+        }
+        .form-container input[type="datetime-local"], .mcq-container input[type="number"] {
+            width: 20%;
+        }
+        .form-container button, .mcq-container button, .copy-button, button {
+            background-color: #388e3c; /* dark green button */
+            color: white;
+            border: none;
+            padding: 10px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .form-container button:hover, .mcq-container button:hover, .copy-button:hover {
+            background-color: #2e7d32; /* darker green button on hover */
+        }
+        .mcq-container {
+            margin-top: 10px;
+        }
+        .footer-content {
+            display: flex;
+            align-items: center;
+        }
+        @media (max-width: 768px) {
+            header, footer {
+                flex-direction: column;
+                text-align: center;
+            }
+            .form-container, .mcq-container {
+                width: 100%;
+            }
+            .footer-content {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    {% with messages=get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+        {% for category,message in messages %}
+        <div class="alert-box">
+            <div class="alert-msg" style="background-color:{{category}};">{{message}}</div>
+        </div>
+        {% endfor %}
+    {% endif %}
+    {% endwith %}
+    <header>
+        <div class="logo">Mr.PKG's MCQ</div>
+        <div class="username">{{name}}</div>
+    </header>
+    <div class="container">
+        <form id="mainForm" action="{{url_for("test_edit",code=test_code)}}" method="post">
+            <div class="form-container">
+                <h2>Create Test <span style="color: blue;">Total number of questions : {{ infos | length }}</span></h2>
+                <input type="text" name="title" placeholder="Title" required value="{{test_detail.TEST_TITLE if test_detail.TEST_TITLE else NONE}}">
+                <input type="datetime-local" name="starttime" required value="{{test_detail.START_TIME if test_detail.START_TIME else NONE}}">
+                <input type="datetime-local" name="endtime" required value="{{test_detail.END_TIME if test_detail.END_TIME else NONE}}">
+                <textarea name="description" placeholder="Description" required>{{ test_detail.TEST_DESCRIPTION if test_detail.TEST_DESCRIPTION else "None" }}</textarea>
+                
+            </div>
+            <div id="mcqForms">
+                {% for info in infos %}
+                    <div class="mcq-container">
+                        <h3>MCQ Question</h3>
+                        <b>Question ID:</b><input type="number" name="questionid" value="{{info.ID if info.ID else NONE}}" readonly><br>
+                        <b>Question: {{ loop.index }}</b><textarea name="question[]" placeholder="Question" required>{{info.QUESTION if info.QUESTION else ""}}</textarea>
+                        <b>Option 1:</b><input type="text" name="option1[]" placeholder="Option 1" required value="{{info.OPTION1 if info.OPTION1 else NONE}}">
+                        <b>Option 2:</b><input type="text" name="option2[]" placeholder="Option 2" required value="{{info.OPTION2 if info.OPTION2 else NONE}}">
+                        <b>Option 3:</b><input type="text" name="option3[]" placeholder="Option 3" value="{{info.OPTION3 if info.OPTION3 else NONE}}">
+                        <b>Option 4:</b><input type="text" name="option4[]" placeholder="Option 4" value="{{info.OPTION4 if info.OPTION4 else NONE}}">
+                        <b>Correct Answer:</b>
+                        <select name="correct[]" id="" required>
+                            <option value="" disabled>select one</option>
+                            <option value="option1" {% if info.CORRECT == 'option1' %} selected {% endif %}>Option 1</option>
+                            <option value="option2" {% if info.CORRECT == 'option2' %} selected {% endif %}>Option 2</option>
+                            <option value="option3" {% if info.CORRECT == 'option3' %} selected {% endif %}>Option 3</option>
+                            <option value="option4" {% if info.CORRECT == 'option4' %} selected {% endif %}>Option 4</option>
+                        </select>
+                        <b>Score:</b><input type="number" name="score[]" placeholder="Score" value=1 required value="{{info.SCORE if info.SCORE else NONE}}">
+                        <b>Negative Score:</b><input type="number" name="negative_score[]" placeholder="Negative Score" min=-2 max=2 value="{{info.NEG_SCORE if info.NEG_SCORE else NONE}}">
+                        <button type="button" onclick="removeMCQForm(this)" style="background-color: rgb(244, 70, 70);">Remove</button>
+                        <a href="{{url_for("delete_question",test_id=info.ID,code=test_code)}}" onclick="return confirm('Are You Sure to delete this question Permanently?')"><button type="button" style="background-color: rgb(244, 70, 70);">Delete</button></a>
+                    </div>
+                {% endfor %}
+            </div>
+            <button type="button" onclick="addMCQForm()">Add Question</button>
+            <button type="submit">Submit</button>
+            <a href="{{url_for("delete_test",code=test_code)}}" onclick="return confirm('Are You Sure to delete this test Permanently?')"><button type="button" style="background-color: rgb(244, 70, 70);">Delete Test</button></a>
+        </form>
+        <a href="/home_page"><button style="background-color: rgb(94, 118, 238); margin-top: 10px;">Back</button></a>
+        <a href="{{url_for("leader_board",code=test_code)}}"><button style="background-color: rgb(94, 118, 238); margin-top: 10px;">LeaderBoard</button></a>
+    </div>
+    <footer>
+        <div class="footer-content">
+            Test Code: <span id="testCode">{{test_code}}</span>
+            <button class="copy-button" onclick="copyTestCode()">Copy</button>
+        </div>
+    </footer>
+    <script>
+        function addMCQForm() {
+            const mcqContainer = document.createElement('div');
+            mcqContainer.className = 'mcq-container';
+            mcqContainer.innerHTML = `
+                <h3>MCQ Question</h3>
+                <b>Question ID:</b><input type="number" name="questionid" readonly><br>
+                <b>Question:</b><textarea name="question[]" placeholder="Question" required></textarea>
+                <b>Option 1:</b><input type="text" name="option1[]" placeholder="Option 1" required>
+                <b>Option 2:</b><input type="text" name="option2[]" placeholder="Option 2" required>
+                <b>Option 3:</b><input type="text" name="option3[]" placeholder="Option 3">
+                <b>Option 4:</b><input type="text" name="option4[]" placeholder="Option 4">
+                <b>Correct Answer:</b>
+                <select name="correct[]" id="" required>
+                    <option value="" disabled>select one</option>
+                    <option value="option1">Option 1</option>
+                    <option value="option2">Option 2</option>
+                    <option value="option3">Option 3</option>
+                    <option value="option4">Option 4</option>
+                </select>
+                <b>Score:</b><input type="number" name="score[]" placeholder="Score" value=1 required>
+                <b>Negtive Score:</b><input type="number" name="negative_score[]" placeholder="Negative Score"  min=-2 max=2>
+                <button type="button" onclick="removeMCQForm(this)" style="background-color: rgb(244, 70, 70);">Remove</button>
+            `;
+            document.getElementById('mcqForms').appendChild(mcqContainer);
+        }
+
+        function removeMCQForm(button) {
+            console.log("hello");
+            
+            const mcqContainer = button.parentElement;
+            mcqContainer.remove();
+        }
+
+        function copyTestCode() {
+            const testCode = document.getElementById('testCode').innerText;
+            navigator.clipboard.writeText(testCode).then(() => {
+                alert('Test code copied to clipboard');
+            });
+        }
+    </script>
+</body>
+</html>
